@@ -15,7 +15,6 @@ df = df[
 
 
 def draw_line_plot():
-    plt.clf()
     # Draw line plot
     figure = df.plot.line(x="date", y='value')
     figure.set(xlabel="Date")
@@ -30,7 +29,6 @@ def draw_line_plot():
 
 
 def draw_bar_plot():
-    plt.clf()
     # Copy and modify data for monthly bar plot
     df_bar = df.copy()
 
@@ -54,23 +52,26 @@ def draw_bar_plot():
 
 
 def draw_box_plot():
-    plt.clf()
     # Prepare data for box plots (this part is done!)
     df_box = df.copy()
-    df_box['date'] = pd.to_datetime(df_box['date'], format='%Y-%m-%d')
+    df_box['Date'] = pd.to_datetime(df_box['date'], format='%Y-%m-%d')
     df_box.reset_index(inplace=True)
-    df_box['year'] = [d.year for d in df_box.date]
-    df_box['month'] = [d.strftime('%b') for d in df_box.date]
+    df_box['Year'] = [d.year for d in df_box.Date]
+    df_box['Month'] = [d.strftime('%b') for d in df_box.Date]
     # Draw box plots (using Seaborn)
 
     # figure = sns.catplot(y="value", data=df_box, kind="box", row="year")
-    fig, axs = plt.subplots(2)
+    fig, axs = plt.subplots(1, 2)
     # sns.regplot(x='year', y='value', data=df_box, ax=axs[0])
     # sns.regplot(x='month', y='value', data=df_box, ax=axs[1])
-    sns.boxplot(x='year', y='value', data=df_box, ax=axs[0])
-    sns.boxplot(x='month', y='value', data=df_box, ax=axs[1])
+    sns.boxplot(x='Year', y='value', data=df_box, ax=axs[0])
+    axs[0].set_title("Year-wise Box Plot (Trend)")
+    sns.boxplot(x='Month', y='value', data=df_box, ax=axs[1])
+    axs[1].set_title("Month-wise Box Plot (Seasonality)")
+    fig.tight_layout()
+
     plt.show()
     print(df_box.head())
     # Save image and return fig (don't change this part)
-    # fig.savefig('box_plot.png')
-    # return fig
+    fig.savefig('box_plot.png')
+    return fig
