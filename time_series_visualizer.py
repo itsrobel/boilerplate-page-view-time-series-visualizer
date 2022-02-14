@@ -9,9 +9,9 @@ df = pd.read_csv('fcc-forum-pageviews.csv')
 df.set_index("date")
 # Clean data
 df = df[
-    (df['value']>= df['value'].quantile(0.025))
-    &(df['value'] <= df['value'].quantile(0.975))
-    ]
+    (df['value'] >= df['value'].quantile(0.025))
+    & (df['value'] <= df['value'].quantile(0.975))
+]
 
 
 def draw_line_plot():
@@ -24,49 +24,53 @@ def draw_line_plot():
     plt.show()
     fig = figure.get_figure()
 
-
-
-
     # Save image and return fig (don't change this part)
     fig.savefig('line_plot.png')
     return fig
+
 
 def draw_bar_plot():
     plt.clf()
     # Copy and modify data for monthly bar plot
     df_bar = df.copy()
 
-    #print(df_bar.groupby(""))
+    # print(df_bar.groupby(""))
     # print(df_bar.groupby(df_bar['date'].map(lambda x: x.year)))
     df_bar['date'] = pd.to_datetime(df_bar['date'], format='%Y-%m-%d')
     df_bar['year'] = [d.year for d in df_bar.date]
     df_bar['month'] = [d.month for d in df_bar.date]
+    df_bar['month'] = df_bar.date.dt.month_name()
     # print(df_bar.groupby(df_bar.date.dt.year).head())
-    print(df_bar.head())
-    # Draw bar plot
 
+    figure = sns.catplot(x="year", y="value", hue="month",
+                         data=df_bar, kind="bar", aspect=1.3, ci=None)
 
-
-
+    fig = figure
+    # plt.show()
 
     # Save image and return fig (don't change this part)
-    # fig.savefig('bar_plot.png')
-    # return fig
+    fig.savefig('bar_plot.png')
+    return fig
+
 
 def draw_box_plot():
     plt.clf()
     # Prepare data for box plots (this part is done!)
     df_box = df.copy()
+    df_box['date'] = pd.to_datetime(df_box['date'], format='%Y-%m-%d')
     df_box.reset_index(inplace=True)
     df_box['year'] = [d.year for d in df_box.date]
     df_box['month'] = [d.strftime('%b') for d in df_box.date]
-
     # Draw box plots (using Seaborn)
 
-
-
-
-
+    # figure = sns.catplot(y="value", data=df_box, kind="box", row="year")
+    fig, axs = plt.subplots(2)
+    # sns.regplot(x='year', y='value', data=df_box, ax=axs[0])
+    # sns.regplot(x='month', y='value', data=df_box, ax=axs[1])
+    sns.boxplot(x='year', y='value', data=df_box, ax=axs[0])
+    sns.boxplot(x='month', y='value', data=df_box, ax=axs[1])
+    plt.show()
+    print(df_box.head())
     # Save image and return fig (don't change this part)
     # fig.savefig('box_plot.png')
     # return fig
