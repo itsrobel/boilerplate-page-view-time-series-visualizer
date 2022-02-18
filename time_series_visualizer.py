@@ -45,7 +45,6 @@ def draw_bar_plot():
 
     fig = figure
     # plt.show()
-
     # Save image and return fig (don't change this part)
     fig.savefig('bar_plot.png')
     return fig
@@ -57,21 +56,28 @@ def draw_box_plot():
     df_box['Date'] = pd.to_datetime(df_box['date'], format='%Y-%m-%d')
     df_box.reset_index(inplace=True)
     df_box['Year'] = [d.year for d in df_box.Date]
+    df_box['month'] = [d.month for d in df_box.Date]
+    # df_box['Month'] = df_box.sort_values("Month")
     df_box['Month'] = [d.strftime('%b') for d in df_box.Date]
     # Draw box plots (using Seaborn)
-
+    df_box = df_box.sort_values("month")
     # figure = sns.catplot(y="value", data=df_box, kind="box", row="year")
     fig, axs = plt.subplots(1, 2)
     # sns.regplot(x='year', y='value', data=df_box, ax=axs[0])
     # sns.regplot(x='month', y='value', data=df_box, ax=axs[1])
     sns.boxplot(x='Year', y='value', data=df_box, ax=axs[0])
     axs[0].set_title("Year-wise Box Plot (Trend)")
+    axs[0].set(ylabel='Page Views')
     sns.boxplot(x='Month', y='value', data=df_box, ax=axs[1])
     axs[1].set_title("Month-wise Box Plot (Seasonality)")
+    axs[1].set(ylabel='Page Views')
     fig.tight_layout()
+    actual = []
+    for label in fig.axes[1].get_xaxis().get_majorticklabels():
+        actual.append(label.get_text())
 
     plt.show()
-    print(df_box.head())
+    print(actual)
     # Save image and return fig (don't change this part)
     fig.savefig('box_plot.png')
     return fig
