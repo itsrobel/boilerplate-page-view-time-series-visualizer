@@ -37,14 +37,24 @@ def draw_bar_plot():
     df_bar['date'] = pd.to_datetime(df_bar['date'], format='%Y-%m-%d')
     df_bar['year'] = [d.year for d in df_bar.date]
     df_bar['month'] = [d.month for d in df_bar.date]
+
+    df_bar = df_bar.sort_values("month")
     df_bar['month'] = df_bar.date.dt.month_name()
     # print(df_bar.groupby(df_bar.date.dt.year).head())
 
     figure = sns.catplot(x="year", y="value", hue="month",
                          data=df_bar, kind="bar", aspect=1.3, ci=None)
-
+    figure.set(xlabel="Years")
+    figure.set(ylabel="Average Page Views")
     fig = figure
-    # plt.show()
+
+    ax = fig.axes[0][0]
+    print(ax)
+    ax.legend()
+    for label in ax.get_legend().get_texts():
+        # actual.append(label.get_text())
+        print(label.get_text())
+    plt.show()
     # Save image and return fig (don't change this part)
     fig.savefig('bar_plot.png')
     return fig

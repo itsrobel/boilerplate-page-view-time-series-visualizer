@@ -47,6 +47,7 @@ class BarPlotTestCase(unittest.TestCase):
 
     def test_bar_plot_legend_labels(self):
         actual = []
+        print(self.ax.get_legend().get_texts())
         for label in self.ax.get_legend().get_texts():
             actual.append(label.get_text())
         expected = ['January', 'February', 'March', 'April', 'May', 'June',
